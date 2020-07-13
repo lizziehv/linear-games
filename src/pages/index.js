@@ -1,7 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../static/styles/style.scss"
-import { Link } from "gatsby";
 
 import Container from "react-bootstrap/Container";
 import GameCard from "../components/gameCard";
@@ -40,7 +39,10 @@ const IndexPage = () => (
         <GameCard game={gameInfo.sweep}/>
       </Row>
     </Container>
-    <Link to='/page-2/'>To second page</Link>
+    <button className="general padded-top padded-bottom" to='/page-2/'>LEARN THE MATH!</button>
+    <footer>
+      <img src={require("../static/images/bjoern.png")} alt="" className="padded-top"/>
+    </footer>
   </div>
 );
 
