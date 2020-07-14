@@ -1,79 +1,166 @@
 import React from "react";
-import Board from "../../components/labyrinth/board";
+import Board from "../../components/labyrinth/Board";
 import Timer from "../../components/timer";
-import Square from "../../components/labyrinth/square";
+import Square from "../../components/labyrinth/Square";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { createRandomMatrix } from "../../components/labyrinth/util";
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X } from 'react-feather';
+
+const SIZE = 6;
+const itemImg = require("../../components/labyrinth/images/bigCoin.png");
 
 class LabyrinthGame extends React.Component{
   constructor(props) {
     super(props);
 
     // choose matrices in control board
-    var matrices = [];
-    matrices.push(<Square matrix={[2, 0, 0, 2]} setPressed={this.chooseMatrix} isControl={true}/>);
-    matrices.push(<Square matrix={[0, 1, 1, 0]} setPressed={this.chooseMatrix} isControl={true}/>);
-    matrices.push(<Square matrix={null} setPressed={this.chooseMatrix} isControl={true}/>);
-    matrices.push(<Square matrix={null} setPressed={this.chooseMatrix} isControl={true}/>);
+    var matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
+    matrices.push(createRandomMatrix());
+    matrices.push(createRandomMatrix());
+
+    this.timer = React.createRef();
+    this.board = React.createRef();
 
     this.state = {
-      chosenMatrix: null,
+      chosenMatrix: -1,
       controlMatrices: matrices,
-      errorMsg: ""
+      errorMsg: "",
+      items: 0,
+      gameOver: false,
+      gamePaused: false
     }
   };
 
-  chooseMatrix = (square) => {
-    // forget previous choice
-    if(this.state.chosenMatrix) this.state.chosenMatrix.isPressed(false);
+  componentDidMount() {
+    // make component update again with reference to board
+    this.forceUpdate();
+  }
 
+  chooseMatrix = (r, c) => {
     // update to new matrix
-    square.isPressed(true);
-    this.setState({ chosenMatrix: square });
+    this.setState({ chosenMatrix: r });
   };
 
   multiplyLeft = () => {
-    if(!this.state.chosenMatrix) return;
-    else if(!this.board.multiplyLeft(this.state.chosenMatrix.state.matrix)) return;
+    const { chosenMatrix, controlMatrices } = this.state;
+    if(chosenMatrix === -1) return;
+    this.board.current.multiplyLeft(controlMatrices[chosenMatrix]);
   }
 
   multiplyRight = () => {
-    if(!this.state.chosenMatrix) return;
-    else if(!this.board.multiplyRight(this.state.chosenMatrix.state.matrix)) return;
+    const { chosenMatrix, controlMatrices } = this.state;
+    if(chosenMatrix === -1) return;
+    else if(!this.board.current.multiplyRight(controlMatrices[chosenMatrix])) return;
+  }
+
+  newItem = () => {
+    const { items } = this.state;
+    if(items === SIZE-1){
+      this.setState({ items: items + 1, gameOver: true })
+    } else {
+      this.setState({ items: items + 1 });
+    }
+  }
+
+  nextGame = () => {
+    this.setState({
+      chosenMatrix: -1, 
+      gameOver: false,
+      items: 0,
+      gamePaused: false
+    });
+    this.forceUpdate();
   }
 
   renderControls = () => {
+    const { chosenMatrix, controlMatrices } = this.state;
+
     return(
-      <>
+      <div className="down full-height">
         <div className="down">
-          {this.state.controlMatrices}
-        </div>
+          {controlMatrices.map((array, i) => 
+          <Square matrix={array} pressed={i===chosenMatrix} setPressed={this.chooseMatrix} r={i} c={-1}/>)}
+        </div>  
         <div className="down">
-          <button className="general" onClick={this.multiplyLeft}>Multiply Left</button>
-          <button className="general" onClick={this.multiplyRight}>Multiply Right</button>
-          <button className="general" onClick={this.multiplyRight}>Undo</button>
+          <button className="general" onClick={this.multiplyLeft}><X /> Left</button>
+          <div className="separator" />
+          <button className="general" onClick={this.multiplyRight}><X /> Right</button>
+          <div className="across space-around">
+            <button className="general" onClick={this.timer.current ? this.timer.current.pause : null}>
+              <Pause />
+            </button>
+            <div className="separator" />
+            <button className="general" onClick={this.multiplyRight}>U</button>
+          </div>
         </div>
-      </>
+      </div>
     );
   };
 
-  render() {
+  renderArrows = () => {
     return(
-      <Container fluid>
-        <Row>
-          <Col lg={3} xs={{ span: 12, offset: 0 }}>
-            {this.renderControls()}
-          </Col>
-          <Col lg={6} xs={{ span: 12, offset: 0 }}>
-            <Board ref={ref => (this.board = ref)}/>
-          </Col>
-          <Col lg={2} xs={{ span: 12, offset: 0 }}>
-            <Timer time={60} />
-          </Col>
-        </Row>
-      </Container>
-    );
+    <div>
+      <div className="across">
+        <button className="general" onClick={this.board.current ? this.board.current.movePlayerUp:null}>
+          <ArrowUp />
+        </button>
+      </div>
+      <div className="across">
+        <button className="general" onClick={this.board.current ? this.board.current.movePlayerLeft:null}>
+          <ArrowLeft />
+        </button>
+        <button className="general" onClick={this.board.current ? this.board.current.movePlayerDown:null}>
+          <ArrowDown />
+        </button>
+        <button className="general" onClick={this.board.current ? this.board.current.movePlayerRight:null}>
+          <ArrowRight />
+        </button>
+      </div>
+    </div>
+    )
+  }
+
+  render() {
+    if(this.state.gameOver){
+      return(
+        <Container fluid>
+          <h1>Game Over</h1>
+          <button className="general" onClick={this.nextGame}>
+            Next Game
+          </button>
+        </Container>
+      );
+    }
+    else{
+      return(
+        <Container fluid>
+          <Row>
+            <Col lg={3} xs={{ span: 12, offset: 0 }}>
+              {this.renderControls()}
+            </Col>
+            <Col lg={6} xs={{ span: 12, offset: 0 }}>
+              <Board ref={this.board} newItem={this.newItem}/>
+            </Col>
+            <Col lg={3} xs={{ span: 12, offset: 0 }}>
+              <div className="down full-height">
+                <Timer 
+                  ref={this.timer} 
+                  time={60} 
+                  timeOver={() => {this.setState({ gameOver: true })}
+                }/>
+                <div className="across">
+                  <img src={itemImg} alt="" />
+                  <h4>X {this.state.items}</h4>
+                </div>
+                {this.renderArrows()}
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      );
+    }
   };
 }
 
