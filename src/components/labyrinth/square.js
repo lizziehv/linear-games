@@ -8,7 +8,7 @@ const playerImg = require("./images/player.png");
  *                  3 corresponds to white field with item
  */
 const Field = ({ value, hasPlayer}) => {
-  var name = "field";
+  let name = "field";
   if(value === 1) name = "field black";
   else if(value >= 2) name = "field white";
   
@@ -28,9 +28,7 @@ const Field = ({ value, hasPlayer}) => {
 * @param {*} hasItem does this matrix have an item?
 * @param {*} player player's positions
 */
-const Square = ({ matrix, pressed, setPressed, r, c, player}) => {
-  var type = pressed ? "square pressed" : "square";
-  if(pressed && c === -1) type = "square pressed-control";
+const Square = ({ matrix, pressed, setPressed, r, c, player, theme }) => {
   const hasItem = !matrix.every((entry) => entry < 3);
 
   const playerInMatrix = (c === -1) ? false : (player.mrow === r && player.mcol === c);
@@ -39,9 +37,14 @@ const Square = ({ matrix, pressed, setPressed, r, c, player}) => {
   // matrices containing player and items can't be pressed
   const onPress = (!(hasItem || playerInMatrix)|| c === -1) ? 
               () => setPressed(r, c) : () => setPressed(-1, -1);
-  
+
+  let styles = theme.square;
+  if(hasItem || playerInMatrix) styles = theme.squareBlocked;
+  else if(pressed && c === -1) styles = theme.pressedControl;
+  else if (pressed) styles = theme.squarePressed;
+ 
   return(
-    <button className={type} onClick={onPress}>
+    <button className={"square"} style={styles} onClick={onPress} >
       <div className="across">
         <Field value={matrix[0]} hasPlayer={playerInMatrix&&player.mpos===0} />
         <Field value={matrix[1]} hasPlayer={playerInMatrix&&player.mpos===1} />

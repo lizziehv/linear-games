@@ -1,24 +1,43 @@
+const chance0 = 8; // 4 out of 10 
+const chance1 = 8; // 4 out of 10
+const totalChance = 20;
+
+/**
+ * Random number between 0 and 2, with different probabilities
+ */
+const randomMatrixValue = () => {
+  const randInRange = Math.floor(Math.random()*(totalChance + 1));
+  if(randInRange < chance0){
+    return 0;
+  } else if (randInRange < chance1 + chance0){
+    return 1;
+  } else {
+    return 2;
+  }
+}
+
 /**
  * Returns a random array representing a 2*2 matrix
  * with nonzero determinant
  */
 export const createRandomMatrix = () => {
-  var array = [0, 0, 0, 0];
+  let array = [0, 0, 0, 0];
 
   // choose two random values 
-  var randomI = Math.floor(Math.random()*(4));
-  do { var randomJ = Math.floor(Math.random()*(4)); } 
+  let randomI = Math.floor(Math.random()*(4));
+  let randomJ;
+  do { randomJ = Math.floor(Math.random()*(4)); } 
   while(randomJ === randomI);
 
   // set two random to 2
-  for(var i = 0; i < 4 ;i++){
+  for(let i = 0; i < 4 ;i++){
     if(i !== randomI && i !== randomJ) array[i] = 2;
   }
       
   // fill other two values
   do {
-    array[randomI] = Math.floor(Math.random()*(3));
-    array[randomJ] = Math.floor(Math.random()*(3));
+    array[randomI] = randomMatrixValue();
+    array[randomJ] = randomMatrixValue();
 
   } // repeat until the matrix has nonzero determinant
   while ((array[0]*array[3] - array[1]*array[2])%3 === 0);
@@ -35,11 +54,11 @@ export const createRandomMatrix = () => {
  * @return board
  */
 export const createRandomBoard = (size) => {
-  var rows = new Array(size);
+  let rows = new Array(size);
 
-  for(var r = 0; r < size; r++){
-    var row = new Array(size);
-    for(var c = 0; c < size; c++){
+  for(let r = 0; r < size; r++){
+    let row = new Array(size);
+    for(let c = 0; c < size; c++){
       // last matrix is fixed (all white)
       if(r === size-1 && c === size-1)
         row[c] = [2, 2, 2, 2];
@@ -83,14 +102,15 @@ export const multiply = (a, b) => {
 export const placeItems = (board, size) => {
   // choose random places to place items
 
-  var count = 0;
+  let count = 0;
   while(count < size){
     let randR = Math.floor(Math.random()*size); // random row
     let randC = Math.floor(Math.random()*size); // random column
 
     // place item if no item in matrix
     if(board[randR][randC].every((entry) => entry < 3) && !(randR===size-1 && randC===size-1)){
-      do{ var randI = Math.floor(Math.random()*4); }
+      let randI;
+      do{ randI = Math.floor(Math.random()*4); }
       while(board[randR][randC][randI] !== 2);
 
       board[randR][randC][randI] = 3;

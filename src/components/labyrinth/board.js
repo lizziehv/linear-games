@@ -4,6 +4,7 @@ import { createRandomBoard, placeItems, multiply } from "./util";
 import UIfx from 'uifx';
 import errorMp3 from '../../static/sounds/error.mp3'
 
+
 const SIZE = 6;
 const error = new UIfx({asset: errorMp3});
 
@@ -30,6 +31,7 @@ class Board extends React.Component {
         mpos: 3
       }
     }
+    this.renderRow = this.renderRow.bind(this);
   };
 
   /**
@@ -85,8 +87,8 @@ class Board extends React.Component {
     const prevPlayer = this.state.player;
 
     // determine new position
-    var newPos = prevPlayer.mpos - 2;
-    var newRow = prevPlayer.mrow;
+    let newPos = prevPlayer.mpos - 2;
+    let newRow = prevPlayer.mrow;
     if(newPos < 0){
       newPos += 4;
       newRow -= 1;
@@ -113,8 +115,8 @@ class Board extends React.Component {
     const prevPlayer = this.state.player;
 
     // determine new position
-    var newPos = prevPlayer.mpos + 2;
-    var newRow = prevPlayer.mrow;
+    let newPos = prevPlayer.mpos + 2;
+    let newRow = prevPlayer.mrow;
     if(newPos > 3){
       newPos -= 4;
       newRow += 1;
@@ -136,8 +138,8 @@ class Board extends React.Component {
     const prevPlayer = this.state.player;
 
     // determine new position
-    var newPos = prevPlayer.mpos - 1;
-    var newCol = prevPlayer.mcol;
+    let newPos = prevPlayer.mpos - 1;
+    let newCol = prevPlayer.mcol;
     if(newPos < 0 || newPos === 1){
       newPos += 2;
       newCol -= 1;
@@ -159,8 +161,8 @@ class Board extends React.Component {
     const prevPlayer = this.state.player;
 
     // determine new position
-    var newPos = prevPlayer.mpos + 1;
-    var newCol = prevPlayer.mcol;
+    let newPos = prevPlayer.mpos + 1;
+    let newCol = prevPlayer.mcol;
     if(newPos > 3 || newPos === 2){
       newPos -= 2;
       newCol += 1;
@@ -218,7 +220,7 @@ class Board extends React.Component {
    */
   renderRow = (row) => {
     const { board, pressedR, pressedC, player } = this.state;
-    const { mrow, mcol, mpos } = player;
+    const { mrow, mcol, mpos } = player; 
 
     return(
       <div className="across">
@@ -229,6 +231,7 @@ class Board extends React.Component {
           r={row} 
           c={col}
           player={{mrow, mcol, mpos}}
+          theme={this.props.theme}
         />)}
       </div>
     );
@@ -236,7 +239,7 @@ class Board extends React.Component {
 
   render() {
     const rows = [];
-    for(var i = 0; i < SIZE; i++) rows.push(this.renderRow(i));
+    for(let i = 0; i < SIZE; i++) rows.push(this.renderRow(i));
 
     return(<div className="board-container">{rows}</div>);
   }
