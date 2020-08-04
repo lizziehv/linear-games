@@ -5,15 +5,15 @@ import Square from "../../components/labyrinth/Square";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { createRandomMatrix, moves } from "../../components/labyrinth/util";
+import { createRandomMatrix } from "../../components/labyrinth/util";
 import { navigate } from "gatsby";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X, Play, Star } from 'react-feather';
 
 const SIZE = 6;
 const REPS = 1;
-const TIME = 10;
+const TIME = 60;
 
-class LabyrinthGame extends React.Component{
+class LabyrinthTutorial extends React.Component{
   constructor(props) {
     super(props);
 
@@ -42,16 +42,16 @@ class LabyrinthGame extends React.Component{
     
     if(this.board.current){
       switch (e.keyCode) {
-        case moves.LEFT:  // left arrow
+        case 37:  // left arrow
           this.board.current.movePlayerLeft();
           break;
-        case moves.UP:  // up arrow
+        case 38:  // up arrow
           this.board.current.movePlayerUp();
           break;
-        case moves.RIGHT:  // right arrow
+        case 39:  // right arrow
           this.board.current.movePlayerRight();
           break;
-        case moves.DOWN:  // down arrow
+        case 40:  // down arrow
           this.board.current.movePlayerDown();
           break;
         default:
@@ -211,7 +211,7 @@ class LabyrinthGame extends React.Component{
 
     if(repetitionNum === REPS){
       return(
-        <div className={"fixed "+style.fontClass} style={style.background}>
+        <div className="fixed" style={style.background}>
           <div className="content-container" >
             <h1 style={style.h1}>
               Game Over !
@@ -238,7 +238,7 @@ class LabyrinthGame extends React.Component{
     }
     else if(gameOver){
       return(
-        <div className={"fixed "+style.fontClass} style={style.background}>
+        <div className="fixed" style={style.background}>
           <div className="content-container" >
             <h2 style={{...style.h2, textAlign: 'center'}}>
               {'You collected ' + items + " out of " + SIZE + " items."}
@@ -262,7 +262,7 @@ class LabyrinthGame extends React.Component{
     }
     else {
       return(
-        <div className={style.fontClass}>
+        <div>
           <Container fluid style={style.background}>
             <Row>
               <Col lg={3} xs={{ span: 12, offset: 0 }}>
@@ -276,8 +276,7 @@ class LabyrinthGame extends React.Component{
                   {timerOn &&
                   <Timer 
                     ref={this.timer} 
-                    time={TIME}
-                    theme={style} 
+                    time={TIME} 
                     timeOver={this.endGame}/>}
                   <div className="across">
                     <img className="bigItem" src={style.itemImg} alt="" />
@@ -294,4 +293,4 @@ class LabyrinthGame extends React.Component{
   }
 }
 
-export default LabyrinthGame;
+export default LabyrinthTutorial;

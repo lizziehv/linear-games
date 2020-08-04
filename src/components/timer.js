@@ -46,10 +46,11 @@ class Timer extends React.Component {
     let sec = this.state.time % 60;
     if (sec < 10) sec = "0" + sec;
 
+    const style = this.props.theme;
     return(
       <div className="down">
-        <h4>{'Timer'}</h4>
-        <h4>{min}:{sec}</h4>
+        <h4 style={style.h4}>{'Timer'}</h4>
+        <h4 style={style.h4}>{min}:{sec}</h4>
       </div>
     );
   }

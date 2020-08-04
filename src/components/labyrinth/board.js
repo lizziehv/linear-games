@@ -1,6 +1,6 @@
 import React from "react";
 import Square from "./Square";
-import { createRandomBoard, placeItems, multiply } from "./util";
+import { createRandomBoard, placeItems, multiply, moves } from "./util";
 import UIfx from 'uifx';
 import errorMp3 from '../../static/sounds/error.mp3'
 
@@ -29,10 +29,16 @@ class Board extends React.Component {
         mrow: SIZE-1,
         mcol: SIZE-1,
         mpos: 3
-      }
+      },
+      lastMove: moves.LEFT
     }
     this.renderRow = this.renderRow.bind(this);
   };
+
+  componentDidMount() {
+    // update game with reference to board
+    this.props.gameUpdate();
+  }
 
   /**
    * Replace pressed matrix by new pressed matrix
@@ -108,7 +114,7 @@ class Board extends React.Component {
     };
 
     // update pos
-    this.updatePosition(newPlayer);
+    this.updatePosition(newPlayer, moves.UP);
   }
 
   movePlayerDown = () => {
@@ -131,7 +137,7 @@ class Board extends React.Component {
     };
 
     // see if item needs to be picked up
-    this.updatePosition(newPlayer);
+    this.updatePosition(newPlayer, moves.DOWN);
   }
 
   movePlayerLeft = () => {
@@ -154,7 +160,7 @@ class Board extends React.Component {
     };
 
     // see if item needs to be picked up
-    this.updatePosition(newPlayer);
+    this.updatePosition(newPlayer, moves.LEFT);
   }
 
   movePlayerRight = () => {
@@ -177,14 +183,14 @@ class Board extends React.Component {
     };
 
     // see if item needs to be picked up
-    this.updatePosition(newPlayer);
+    this.updatePosition(newPlayer, moves.RIGHT);
   }
 
   /**
    * Update location, picking up coins if necessary
    * @param {*} newPlayer object containing new player locations
    */
-  updatePosition = (newPlayer) => {
+  updatePosition = (newPlayer, move) => {
     const { mrow, mcol, mpos } = newPlayer;
 
     // if coin needs to be picked up
@@ -206,12 +212,13 @@ class Board extends React.Component {
           }
           return row;
         }),
-        player: newPlayer
+        player: newPlayer,
+        lastMove: move
       }));
       this.props.newItem();
     }
     else{
-      this.setState({ player: newPlayer });
+      this.setState({ player: newPlayer, lastMove: move });
     }
   }
 
@@ -219,7 +226,7 @@ class Board extends React.Component {
    * @param {*} row to render
    */
   renderRow = (row) => {
-    const { board, pressedR, pressedC, player } = this.state;
+    const { board, pressedR, pressedC, player, lastMove } = this.state;
     const { mrow, mcol, mpos } = player; 
 
     return(
@@ -232,6 +239,7 @@ class Board extends React.Component {
           c={col}
           player={{mrow, mcol, mpos}}
           theme={this.props.theme}
+          lastMove={lastMove}
         />)}
       </div>
     );

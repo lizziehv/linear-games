@@ -9,8 +9,6 @@ const Slider = ({ handleChange, checked, style }) => {
       handleDiameter={28}
       offColor={style.sliderOff}
       onColor={style.sliderOn}
-      // offHandleColor={style.sliderOff}
-      // onHandleColor={style.sliderOff}
       height={40}
       width={70}
       className="react-switch"

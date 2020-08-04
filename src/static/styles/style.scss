@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=VT323&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap);
 
 // define colors
@@ -7,12 +7,16 @@ $light-gray: #8D8D8D;
 $lightest-gray: #C4C4C4;
 $pink: #ED0170;
 $blue: #1c66f0;
+$pale-yellow: #faf684;
+$yellow: #fff700;
 
 body {
     text-align: center;
     font-family: Roboto;
     font-style: normal;
 }
+
+.pacman-font{ font-family: 'Press Start 2P'; }
 
 h1 {
     // font
@@ -27,10 +31,6 @@ h1 {
     justify-content: center;
     margin-top: 40px;
     margin-bottom: 40px;
-}
-
-.pacman-font{
-    font-family: 'VT323';
 }
 
 h2 {
@@ -50,10 +50,7 @@ h4 {
     color: $dark-gray;
 }
 
-
-footer {
-    background-color: $lightest-gray;
-}
+footer { background-color: $lightest-gray; }
 
 button {
     background-color: transparent;
@@ -61,9 +58,7 @@ button {
     border: none;
 }
 
-.board-container {
-    padding-top: 7%;
-}
+.board-container { padding-top: 7%; }
 
 button:focus { outline:0; }
 
@@ -95,17 +90,11 @@ button:focus { outline:0; }
     color: white;
 }
 
-.general:active {
-    color: $dark-gray;
-}
+.general:active { color: $dark-gray; }
 
-.padded-top {
-    margin-top: 80px;
-}
+.padded-top { margin-top: 80px; }
 
-.padded-bottom {
-    margin-bottom: 80px;
-}
+.padded-bottom { margin-bottom: 80px; }
 
 /* Game cards for landing page*/
 .card {
@@ -118,13 +107,9 @@ button:focus { outline:0; }
     overflow: hidden;
 }
 
-.card:hover {
-    transform: scale(1.02);
-}
+.card:hover { transform: scale(1.02); }
 
-.card:active {
-    border: 7px solid $pink;
-}
+.card:active { border: 7px solid $pink; }
 
 .card img {
     margin-left: -10px;
@@ -163,29 +148,21 @@ button:focus { outline:0; }
     align-items: flex-start;
 }
 
-.setting-box {          // single box
-    width: 100%;
-}
+.setting-box { width: 100%; } // single box
 
-.setting-text {
-    width: 30%;
-}
+.setting-text { width: 30%; }
 
-.scroll-pop {
-    // position
-    position: absolute;
+.pop-up {
     margin-left: 85vw;
-    margin-top: 85vh;
-}
-
-.arrow {
+    margin-top: 15vh;
+    background-color: $lightest-gray;
     animation: bounce 2s infinite;
 }
 
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
         transform: translateY(0);
-    }
+    } 
     40% {
         transform: translateY(-30px);
     }
@@ -210,19 +187,10 @@ button:focus { outline:0; }
     }
 }
 
-.pressed {
-    border-bottom: 6px solid $pink;
-}
-
-.pressed-control {
-    border-bottom: 6px solid $blue;
-}
-
 .field {
     width: 35px;
     height: 35px;
     margin-top: -2px;
-    border-radius: 100%;
 
     //small devices
     @media only screen and (max-width: 600px) {
@@ -230,13 +198,6 @@ button:focus { outline:0; }
         width: 4vw;
     }
 }
-
-.white {
-    background-color: white;
-    border: 2px solid $light-gray;
-}
-
-.black { background-color: $dark-gray; }
 
 .across {
     display: flex;
@@ -265,9 +226,7 @@ button:focus { outline:0; }
     }
 }
 
-.full-height {
-    height: 100vh;
-}
+.full-height { height: 100vh; }
 
 .separator {
     height: 10px;
@@ -277,4 +236,33 @@ button:focus { outline:0; }
 .icon {
     max-width: 100%;
     max-height: 100%;
+}
+
+.paused-screen {
+    position: absolute;
+    margin-top: 0px;
+    margin-left: 0px;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    background-color: rgba(244, 244, 244, 0.3);
+}
+
+.star-box {
+    padding-top: 50px;
+    padding-bottom: 100px;
+}
+
+.rating-star {
+    stroke-width: 2px;
+    color: $light-gray;
+}
+
+.rating-star-filled {
+    fill: $dark-gray;
+}
+
+.bigItem {
+    height: 100px;
+    width: 100px;
 }

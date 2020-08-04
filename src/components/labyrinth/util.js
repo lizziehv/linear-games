@@ -1,6 +1,13 @@
-const chance0 = 8; // 4 out of 10 
-const chance1 = 8; // 4 out of 10
+const chance0 = 10; // 4 out of 10 
+const chance1 = 10; // 4 out of 10
 const totalChance = 20;
+
+export const moves = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39
+}
 
 /**
  * Random number between 0 and 2, with different probabilities
@@ -101,20 +108,16 @@ export const multiply = (a, b) => {
  */
 export const placeItems = (board, size) => {
   // choose random places to place items
+  for(let r = 0; r < size; r++){
+    let randC;
+    do { randC = Math.floor(Math.random()*size); }// random column 
+    while (r===size-1 && randC===size-1);
+    
+    // choose an index
+    let randI;
+    do { randI = Math.floor(Math.random()*4); }
+    while(board[r][randC][randI] !== 2);
 
-  let count = 0;
-  while(count < size){
-    let randR = Math.floor(Math.random()*size); // random row
-    let randC = Math.floor(Math.random()*size); // random column
-
-    // place item if no item in matrix
-    if(board[randR][randC].every((entry) => entry < 3) && !(randR===size-1 && randC===size-1)){
-      let randI;
-      do{ randI = Math.floor(Math.random()*4); }
-      while(board[randR][randC][randI] !== 2);
-
-      board[randR][randC][randI] = 3;
-      count = count + 1;
-    }
+    board[r][randC][randI] = 3;
   }
 }

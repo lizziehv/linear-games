@@ -32,6 +32,12 @@ const LabyrinthSettings = () => {
     };
   }, []);
 
+  const PopUp = () => {
+    return(
+      <img src={require("../../static/images/pop.png")} alt="" className="pop-up"/>
+    );
+  }
+
   const sheetClass = style===pacman ? 'fixed pacman-font' : 'fixed'; // wrapper for pacmant fonts
 
   return(
@@ -53,10 +59,10 @@ const LabyrinthSettings = () => {
           </div>
           <Row>
             <Col sm={{span: 3, offset: 3}} xs={{ span: 10, offset: 1 }}>
-              <button className="general">TUTORIAL</button>
+              <button className="general" style={style.button}>TUTORIAL</button>
             </Col>
             <Col sm={{span: 3, offset: 0}} xs={{ span: 10, offset: 1 }}>
-              <button className="general" onClick={
+              <button className="general" style={style.button} onClick={
                 e => {e.preventDefault(); 
                 navigate("/labyrinth/game/", { state: { style, timerOn, soundOn }})}}>
                 START
@@ -64,6 +70,7 @@ const LabyrinthSettings = () => {
             </Col>
           </Row>
         </div>
+        {style===grayscales && <PopUp />}
       </div>
     </div>
   );
