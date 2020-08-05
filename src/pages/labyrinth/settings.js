@@ -5,7 +5,7 @@ import Slider from "../../components/Slider";
 // import Container from "react-bootstrap/Container";
 import { navigate } from "gatsby";
 import { grayscales, pacman, ocean } from "../../static/styles/themes";
-import { Clock, Volume2 } from 'react-feather';
+import { Clock, Volume2, Home } from 'react-feather';
 
 const scrollCutoff = 100;
 
@@ -43,6 +43,11 @@ const LabyrinthSettings = () => {
   return(
     <div className="settings-page">
       <div className={sheetClass} style={style===pacman ? style.background2 : style.background}>
+        <div className="home">
+          <button onClick={() => navigate("/")}>
+            <Home size={60} style={style.icon} />
+          </button>
+        </div>
         <div className="content-container">
           <h1 style={style.h1}>MATRIX LABYRINTH</h1>
           <div className="settings-div" style={style.settingsDiv}>

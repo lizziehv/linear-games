@@ -107,20 +107,17 @@ export const pacman = {
     fontSize: '15px'
   },
   square: {
-    borderColor: electricBlue,
-    borderStyle: 'solid'
+    border: `5px solid ${electricBlue}`,
   },
   squareBlocked: {
-    borderColor: electricBlue,
-    borderStyle: 'solid'
+    backgroundColor: 'black',
+    border: `3px solid #1700a3`,
   },
   squarePressed: {
-    borderColor: electricBlue,
-    borderStyle: 'solid'
+    border: `6px solid #75BFFF`,
   },
   pressedControl: {
-    borderColor: electricBlue,
-    borderStyle: 'solid'
+    border: `6px solid #75BFFF`,
   },
   whiteField: {
     backgroundImage: `url("${require('../images/labyrinth/dot.png')}")`,

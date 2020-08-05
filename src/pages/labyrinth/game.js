@@ -7,11 +7,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { createRandomMatrix, moves } from "../../components/labyrinth/util";
 import { navigate } from "gatsby";
-import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X, Play, Star } from 'react-feather';
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X, Play, Star, Home } from 'react-feather';
 
 const SIZE = 6;
 const REPS = 1;
-const TIME = 10;
+const TIME = 30;
 
 class LabyrinthGame extends React.Component{
   constructor(props) {
@@ -137,23 +137,27 @@ class LabyrinthGame extends React.Component{
     const { chosenMatrix, controlMatrices, gamePaused } = this.state;
 
     return(
-      <div className="down full-height">
+      <div className="down full-height space-around">
+        <div className="separator" />
         <div className="down">
           {controlMatrices.map((array, i) => 
           <Square matrix={array} pressed={i===chosenMatrix} setPressed={this.chooseMatrix} r={i} c={-1} theme={style}/>)}
-        </div>  
-        <div className="down">
+        </div>
+        <div>
           <button className="general" style={style.button} onClick={this.multiplyLeft}><X /> Left</button>
           <div className="separator" />
           <button className="general" style={style.button} onClick={this.multiplyRight}><X /> Right</button>
-          <div className="across space-around">
-            {timerOn && <button className="general" style={style.button} onClick={this.handlePause}>
-              {gamePaused ? <Play /> : <Pause />}
-            </button>}
-            <div className="separator" />
-            <button className="general" style={style.button} onClick={this.multiplyRight}>U</button>
-          </div>
         </div>
+        <div className="across space-around">
+          <button className="general" style={style.button} onClick={() => navigate("/")}>
+            <Home />
+          </button>
+          <div className="separator" />
+          {timerOn && <button className="general" style={style.button} onClick={this.handlePause}>
+            {gamePaused ? <Play /> : <Pause />}
+          </button>}
+        </div>
+        <div className="separator" />
       </div>
     );
   };
@@ -262,7 +266,7 @@ class LabyrinthGame extends React.Component{
     }
     else {
       return(
-        <div className={style.fontClass}>
+        <div className={style.fontClass}>  
           <Container fluid style={style.background}>
             <Row>
               <Col lg={3} xs={{ span: 12, offset: 0 }}>

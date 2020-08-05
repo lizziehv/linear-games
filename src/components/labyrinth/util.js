@@ -1,5 +1,5 @@
-const chance0 = 10; // 4 out of 10 
-const chance1 = 10; // 4 out of 10
+const chance0 = 5; // 4 out of 10 
+const chance1 = 5; // 4 out of 10
 const totalChance = 20;
 
 export const moves = {
