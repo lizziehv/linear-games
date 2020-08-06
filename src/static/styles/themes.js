@@ -68,7 +68,11 @@ export const grayscales = {
   },
   itemImg: require('../images/labyrinth/coin.png'),
   playerImg: require("../images/labyrinth/player.png"),
-  moveImg: false
+  moveImg: false,
+  names: {
+    whiteField: "WHITE FIELDS",
+    item: "COINS"
+  }
 }
 
 export const pacman = {
@@ -85,7 +89,8 @@ export const pacman = {
     color: 'white'
   },
   background: {
-    backgroundColor: darkBlue
+    backgroundColor: darkBlue,
+    minHeight: '100vh'
   },
   background2: {
     backgroundImage: `url("${require('../images/labyrinth/pacmanbg.png')}")`,
@@ -133,6 +138,10 @@ export const pacman = {
   playerUp: require("../images/labyrinth/pacman-up.png"),
   playerDown: require("../images/labyrinth/pacman-down.png"),
   playerRight: require("../images/labyrinth/pacman-right.png"),
+  names: {
+    whiteField: "WHITE DOTS",
+    item: "CHERRIES"
+  }
 }
 
 export const ocean = {
@@ -148,7 +157,8 @@ export const ocean = {
   background: {
     backgroundImage: `url("${require('../images/labyrinth/ocean.png')}")`,
     backgroundRepeat: 'no-repeat',
-    backgroundSize: '100vw 100vh'
+    backgroundSize: '100vw 100vh',
+    minHeight: '100vh'
   },
   settingsDiv: {
     backgroundColor: clearBlue,
@@ -186,5 +196,9 @@ export const ocean = {
   },
   itemImg: require('../images/labyrinth/starfish.png'),
   playerImg: require("../images/labyrinth/fish.png"),
-  moveImg: false
+  moveImg: false,
+  names: {
+    whiteField: "BUBBLES",
+    item: "STARS"
+  }
 }

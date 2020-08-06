@@ -12,7 +12,7 @@ const GameCard = (props) => (
     }}>
       <img src={props.game.img} alt="labyrinth game"/>
       <Card.Body>
-        <h3>{props.game.topic}</h3>
+        <h3 style={{textAlign: 'left'}}>{props.game.topic}</h3>
         <h2>{props.game.name}</h2>
       </Card.Body>
     </button>

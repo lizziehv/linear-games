@@ -1,58 +1,60 @@
 import React from "react";
 import Board from "../../components/labyrinth/Board";
-import Timer from "../../components/Timer";
 import Square from "../../components/labyrinth/Square";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { createRandomMatrix } from "../../components/labyrinth/util";
+import { createRandomMatrix, moves } from "../../components/labyrinth/util";
 import { navigate } from "gatsby";
-import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X, Play, Star } from 'react-feather';
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, X, ArrowRightCircle, ArrowLeftCircle } from 'react-feather';
 
-const SIZE = 6;
-const REPS = 1;
-const TIME = 60;
+const tutorialGuidelines = (style) => {
+  return(
+    [
+      `YOUR GOAL IS TO WALK THROUGH A PATH OF ${style.names.whiteField} AND COLLECT ALL ${style.names.item}.`,
+      `MOVER YOUR PLAYER THROUGH ${style.names.whiteField} USIING ARROWS IN KEYBOARD OR SCREEN.`,
+      `CLICK ON ANY SQUARE YOU WANT TO MANIPULATE, EXCEPT THOSE WITH ITEMS OR YOUR PLAYER.`,
+      `CLICK ON A CONTORL MATRIX TO MULTIPLY YOUR CHOSEN SQUARE WITH.`,
+      `MULTIPLY YOUR CHOSEN MATRIX TO THE LEFT OR RIGHT.`,
+      `COLLECT ALL ITEMS BEFORE THE TIMER RUNS OUT.`
+    ]
+  );
+}
 
 class LabyrinthTutorial extends React.Component{
   constructor(props) {
     super(props);
 
     // choose matrices in control board
-    var matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
+    const matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
     matrices.push(createRandomMatrix());
     matrices.push(createRandomMatrix());
 
-    this.timer = React.createRef();
     this.board = React.createRef();
 
     this.state = {
+      step: 0,
       chosenMatrix: -1,
       controlMatrices: matrices,
-      errorMsg: "",
-      items: 0,
-      totalItems: 0,
-      gameOver: false,
-      gamePaused: false,
-      repetitionNum: 0
+      items: 0
     }
   };
 
   handleKeyPress = (e) => {
-    if(this.state.gamePaused) return;
-    
-    if(this.board.current){
+    const board = this.board.current;    
+    if(board){
       switch (e.keyCode) {
-        case 37:  // left arrow
-          this.board.current.movePlayerLeft();
+        case moves.LEFT:  // left arrow
+          board.movePlayerLeft();
           break;
-        case 38:  // up arrow
-          this.board.current.movePlayerUp();
+        case moves.UP:  // up arrow
+          board.movePlayerUp();
           break;
-        case 39:  // right arrow
-          this.board.current.movePlayerRight();
+        case moves.RIGHT:  // right arrow
+          board.movePlayerRight();
           break;
-        case 40:  // down arrow
-          this.board.current.movePlayerDown();
+        case moves.DOWN:  // down arrow
+          board.movePlayerDown();
           break;
         default:
           return;
@@ -91,93 +93,69 @@ class LabyrinthTutorial extends React.Component{
     else if(!this.board.current.multiplyRight(controlMatrices[chosenMatrix])) return;
   }
 
+  handleStep = (diff) => {
+    const { step } = this.state;
+    if(step > 4 || step + diff < 0) {
+      navigate("/labyrinth/settings/");
+    } else {
+      this.setState({ step: step + diff});
+    }
+  }
+
   newItem = () => {
     const { items, totalItems } = this.state;
-    if(items === SIZE-1){
-      this.setState({ items: items + 1, totalItems: totalItems + 1 });
-      this.endGame();
-    } else {
-      this.setState({ items: items + 1, totalItems: totalItems + 1 });
-    }
+    this.setState({ items: items + 1, totalItems: totalItems + 1 });
   }
 
-  nextGame = () => {
-    this.setState({
-      chosenMatrix: -1, 
-      gameOver: false,
-      items: 0,
-      gamePaused: false,
-    });
-  }
-
-  endGame = () => {
-    this.setState(prevState => ({ 
-      gameOver: true,  
-      repetitionNum: prevState.repetitionNum + 1
-    }));
-  }
-
-  quit = (e) => {
-    e.preventDefault(); 
-    navigate("/");
-  }
-
-  handlePause = () => {
-    const { gamePaused } = this.state;
-    if(this.timer.current){
-      if(gamePaused) { this.timer.current.resume(); }
-      else { this.timer.current.pause(); }
-    }
-
-    this.setState({ gamePaused: !gamePaused });
-  }
 
   renderControls = () => {
-    const { style, timerOn } = this.props.location.state;
-    const { chosenMatrix, controlMatrices, gamePaused } = this.state;
+    const { style } = this.props.location.state;
+    const { chosenMatrix, controlMatrices } = this.state;
 
     return(
-      <div className="down full-height">
+      <div className="down full-container-height space-around">
         <div className="down">
           {controlMatrices.map((array, i) => 
           <Square matrix={array} pressed={i===chosenMatrix} setPressed={this.chooseMatrix} r={i} c={-1} theme={style}/>)}
-        </div>  
-        <div className="down">
+        </div>
+        <div>
           <button className="general" style={style.button} onClick={this.multiplyLeft}><X /> Left</button>
           <div className="separator" />
           <button className="general" style={style.button} onClick={this.multiplyRight}><X /> Right</button>
-          <div className="across space-around">
-            {timerOn && <button className="general" style={style.button} onClick={this.handlePause}>
-              {gamePaused ? <Play /> : <Pause />}
-            </button>}
-            <div className="separator" />
-            <button className="general" style={style.button} onClick={this.multiplyRight}>U</button>
-          </div>
         </div>
       </div>
     );
   };
 
+  renderTimer = (style) => {
+    return(
+      <div className="down">
+        <h4 style={style.h4}>{'Timer'}</h4>
+        <h4 style={style.h4}>00:59</h4>
+      </div>
+    );
+  }
+
   renderArrows = () => {
-    if(!this.board.current) return;
+    const board = this.board.current;
+    if(!board) return;
     
     const style = this.props.location.state.style;
-    const { gamePaused } = this.state;
     return(
       <div>
         <div className="across">
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerUp : null}>
+          <button className="general" style={style.button} onClick={board.movePlayerUp}>
             <ArrowUp />
           </button>
         </div>
         <div className="across">
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerLeft : null}>
+          <button className="general" style={style.button} onClick={board.movePlayerLeft}>
             <ArrowLeft />
           </button>
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerDown : null}>
+          <button className="general" style={style.button} onClick={board.movePlayerDown}>
             <ArrowDown />
           </button>
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerRight : null}>
+          <button className="general" style={style.button} onClick={board.movePlayerRight}>
             <ArrowRight />
           </button>
         </div>
@@ -185,111 +163,56 @@ class LabyrinthTutorial extends React.Component{
     );
   }
 
-  renderRatings = (num, total) => {
-    const numOfStars = Math.ceil((5*num)/(total));
-    const filledStar = new Array(5);
-    for(let i = 0; i < 5; i++){
-      filledStar[i] = i < numOfStars ? true : false;
-    }
-    return(
-      <div className="star-box">
-        <Col sm={{span: 6, offset: 3}} xs={12}>
-          <div className="across">
-            {filledStar.map(filled => {
-              return <Star size={60} className={filled ? "rating-star-filled" : "rating-star"} />
-            })}
-          </div>
-        </Col>
-      </div>
-    );
-  }
-
   render() {
     const style = this.props.location.state.style;
-    const timerOn = this.props.location.state.timerOn;
-    const { gameOver, items, repetitionNum, totalItems } = this.state;
+    const { step } = this.state;
+    const guide = tutorialGuidelines(style);
 
-    if(repetitionNum === REPS){
-      return(
-        <div className="fixed" style={style.background}>
-          <div className="content-container" >
-            <h1 style={style.h1}>
-              Game Over !
-            </h1>
-            {this.renderRatings(totalItems, SIZE*REPS)}
-            <Row>
-              <Col sm={{span: 3, offset: 3}} xs={{ span: 10, offset: 1 }}>
-                <button className="general" style={style.button} onClick={e => this.quit(e)}>
-                  Leave Game
-                </button>
-              </Col>
-              <Col sm={{span: 3, offset: 0}} xs={{ span: 10, offset: 1 }}>
-                <button className="general" style={style.button} onClick={e => {
-                  e.preventDefault(); 
-                  navigate("/labyrinth/settings/");
-                }}>
-                  Play Again
-                </button>
-              </Col>
-            </Row>
-          </div>
+    return(
+      <div className={style.fontClass} style={style.background}>
+        <div className="tutorial-headline">
+          <h3 style={style.h2}>{guide[step]}</h3>
         </div>
-      );
-    }
-    else if(gameOver){
-      return(
-        <div className="fixed" style={style.background}>
-          <div className="content-container" >
-            <h2 style={{...style.h2, textAlign: 'center'}}>
-              {'You collected ' + items + " out of " + SIZE + " items."}
-            </h2>
-            {this.renderRatings(items, SIZE)}
-            <Row>
-              <Col sm={{span: 3, offset: 3}} xs={{ span: 10, offset: 1 }}>
-                <button className="general" style={style.button} onClick={e => this.quit(e)}>
-                  End Game
+        <Container fluid>
+          <Row>
+            <Col lg={1}>
+              <div className="down full-container-height" >
+                <button onClick={() => this.handleStep(-1)}>
+                  <ArrowLeftCircle size={60} className="tutorial-arrow"/>
                 </button>
-              </Col>
-              <Col sm={{span: 3, offset: 0}} xs={{ span: 10, offset: 1 }}>
-                <button className="general" style={style.button} onClick={this.nextGame}>
-                  Next Game
-                </button>
-              </Col>
-            </Row>
-          </div>
-        </div>
-      );
-    }
-    else {
-      return(
-        <div>
-          <Container fluid style={style.background}>
-            <Row>
-              <Col lg={3} xs={{ span: 12, offset: 0 }}>
-                {this.renderControls()}
-              </Col>
-              <Col lg={6} xs={{ span: 12, offset: 0 }}>
-                <Board ref={this.board} theme={style} newItem={this.newItem} gameUpdate={() => this.forceUpdate()}/>
-              </Col>
-              <Col lg={3} xs={{ span: 12, offset: 0 }}>
-                <div className="down full-height">
-                  {timerOn &&
-                  <Timer 
-                    ref={this.timer} 
-                    time={TIME} 
-                    timeOver={this.endGame}/>}
-                  <div className="across">
-                    <img className="bigItem" src={style.itemImg} alt="" />
-                    <h4 style={style.h4}>X {this.state.items}</h4>
-                  </div>
-                  {this.renderArrows()}
+              </div> 
+            </Col>
+            <Col lg={2} xs={{ span: 12, offset: 0 }}>
+              {step > 2 && this.renderControls()}
+            </Col>
+            <Col lg={6}>
+              <Board ref={this.board} theme={style} newItem={this.newItem} gameUpdate={() => this.forceUpdate()}/>
+            </Col>
+            <Col lg={2} xs={{ span: 12, offset: 0 }}>
+              <div className="down full-container-height space-around">
+                <div style={{height: '40%'}}>
+                  {step > 4 && this.renderTimer(style)}
                 </div>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      );
-    }
+                <div style={{height: '40%'}}>
+                  <img className="bigItem" src={style.itemImg} alt="" />
+                  <h4 style={style.h4}>X {this.state.items}</h4>
+                </div>
+                <div style={{height: '20%'}}>
+                  {step > 0 && this.renderArrows()}
+                </div>
+              </div>
+            </Col>
+            <Col lg={1}>
+              <div className="down full-container-height">
+                <button onClick={() => this.handleStep(1)}>
+                  <ArrowRightCircle size={60} className="tutorial-arrow"/>
+                </button>
+              </div> 
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    );
   }
 }
 

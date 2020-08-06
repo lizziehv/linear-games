@@ -249,7 +249,7 @@ class Board extends React.Component {
     const rows = [];
     for(let i = 0; i < SIZE; i++) rows.push(this.renderRow(i));
 
-    return(<div className="board-container">{rows}</div>);
+    return(<div>{rows}</div>);
   }
 }
 

@@ -9,7 +9,7 @@ import { Clock, Volume2, Home } from 'react-feather';
 
 const scrollCutoff = 100;
 
-const LabyrinthSettings = () => {
+const LabyrinthSettings = (props) => {
   const [style, setStyle] = useState(grayscales);
   const [timerOn, setTimerOn] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
@@ -64,7 +64,12 @@ const LabyrinthSettings = () => {
           </div>
           <Row>
             <Col sm={{span: 3, offset: 3}} xs={{ span: 10, offset: 1 }}>
-              <button className="general" style={style.button}>TUTORIAL</button>
+              <button className="general" style={style.button} onClick={e => {
+                e.preventDefault(); 
+                navigate("/labyrinth/tutorial/", { state: { style }})
+              }}>
+                TUTORIAL
+              </button>
             </Col>
             <Col sm={{span: 3, offset: 0}} xs={{ span: 10, offset: 1 }}>
               <button className="general" style={style.button} onClick={

@@ -18,7 +18,7 @@ class LabyrinthGame extends React.Component{
     super(props);
 
     // choose matrices in control board
-    var matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
+    const matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
     matrices.push(createRandomMatrix());
     matrices.push(createRandomMatrix());
 
@@ -93,11 +93,10 @@ class LabyrinthGame extends React.Component{
 
   newItem = () => {
     const { items, totalItems } = this.state;
-    if(items === SIZE-1){
-      this.setState({ items: items + 1, totalItems: totalItems + 1 });
+    this.setState({ items: items + 1, totalItems: totalItems + 1 });
+    
+    if(items === SIZE-1){  
       this.endGame();
-    } else {
-      this.setState({ items: items + 1, totalItems: totalItems + 1 });
     }
   }
 
@@ -272,7 +271,7 @@ class LabyrinthGame extends React.Component{
               <Col lg={3} xs={{ span: 12, offset: 0 }}>
                 {this.renderControls()}
               </Col>
-              <Col lg={6} xs={{ span: 12, offset: 0 }}>
+              <Col lg={6} xs={{ span: 12, offset: 0 }} className="board-container">
                 <Board ref={this.board} theme={style} newItem={this.newItem} gameUpdate={() => this.forceUpdate()}/>
               </Col>
               <Col lg={3} xs={{ span: 12, offset: 0 }}>
