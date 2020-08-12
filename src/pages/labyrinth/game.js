@@ -8,10 +8,17 @@ import Col from "react-bootstrap/Col";
 import { createRandomMatrix, moves } from "../../components/labyrinth/util";
 import { navigate } from "gatsby";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X, Play, Star, Home } from 'react-feather';
+import { coinCollect } from '../../static/sounds/mySounds.js';
+import { grayscales } from "../../static/styles/themes";
 
 const SIZE = 6;
 const REPS = 1;
 const TIME = 30;
+
+const defaultState = {
+  style: grayscales, 
+  timerOn: false
+}
 
 class LabyrinthGame extends React.Component{
   constructor(props) {
@@ -61,9 +68,9 @@ class LabyrinthGame extends React.Component{
   }
 
   componentWillMount() {
-    if(!this.props.location.state.style){
-      navigate("/labyrinth/settings/");
-    }
+    // if(!this.props.location.state || !this.props.location.state.style){
+    //   navigate("/labyrinth/settings/");
+    // }
   }
 
   componentDidMount() {
@@ -95,8 +102,11 @@ class LabyrinthGame extends React.Component{
     const { items, totalItems } = this.state;
     this.setState({ items: items + 1, totalItems: totalItems + 1 });
     
+    // play sound or end game
     if(items === SIZE-1){  
       this.endGame();
+    } else {
+      coinCollect.play();
     }
   }
 
@@ -132,7 +142,7 @@ class LabyrinthGame extends React.Component{
   }
 
   renderControls = () => {
-    const { style, timerOn } = this.props.location.state;
+    const { style, timerOn } = this.props.location.state ? this.props.location.state : defaultState;
     const { chosenMatrix, controlMatrices, gamePaused } = this.state;
 
     return(
@@ -164,7 +174,7 @@ class LabyrinthGame extends React.Component{
   renderArrows = () => {
     if(!this.board.current) return;
     
-    const style = this.props.location.state.style;
+    const { style } = this.props.location.state ? this.props.location.state : defaultState;
     const { gamePaused } = this.state;
     return(
       <div>
@@ -208,8 +218,7 @@ class LabyrinthGame extends React.Component{
   }
 
   render() {
-    const style = this.props.location.state.style;
-    const timerOn = this.props.location.state.timerOn;
+    const { style, timerOn } = this.props.location.state ? this.props.location.state : defaultState;
     const { gameOver, items, repetitionNum, totalItems } = this.state;
 
     if(repetitionNum === REPS){
@@ -272,7 +281,12 @@ class LabyrinthGame extends React.Component{
                 {this.renderControls()}
               </Col>
               <Col lg={6} xs={{ span: 12, offset: 0 }} className="board-container">
-                <Board ref={this.board} theme={style} newItem={this.newItem} gameUpdate={() => this.forceUpdate()}/>
+                <Board 
+                  ref={this.board} 
+                  theme={style}
+                  newItem={this.newItem} 
+                  gameUpdate={() => this.forceUpdate()}
+                />
               </Col>
               <Col lg={3} xs={{ span: 12, offset: 0 }}>
                 <div className="down full-height">

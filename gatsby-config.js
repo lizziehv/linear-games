@@ -13,13 +13,11 @@ module.exports = {
         path: `${__dirname}/src/static/images`,
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `linear-games`,
+        short_name: `linear-games`,
         start_url: `/`,
         background_color: `#663399`,
         theme_color: `#663399`,
@@ -32,4 +30,5 @@ module.exports = {
     // `gatsby-plugin-offline`,
     `gatsby-plugin-sass`
   ],
+  pathPrefix: "/linear-games",
 }

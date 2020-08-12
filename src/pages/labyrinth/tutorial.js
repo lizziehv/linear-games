@@ -7,6 +7,13 @@ import Col from "react-bootstrap/Col";
 import { createRandomMatrix, moves } from "../../components/labyrinth/util";
 import { navigate } from "gatsby";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, X, ArrowRightCircle, ArrowLeftCircle } from 'react-feather';
+import { grayscales } from "../../static/styles/themes";
+
+const defaultState = {
+  style: grayscales, 
+  timerOn: false
+}
+
 
 const tutorialGuidelines = (style) => {
   return(
@@ -63,9 +70,9 @@ class LabyrinthTutorial extends React.Component{
   }
 
   componentWillMount() {
-    if(!this.props.location.state.style){
-      navigate("/labyrinth/settings/");
-    }
+    // if(!this.props.location.state.style){
+    //   navigate("/labyrinth/settings/");
+    // }
   }
 
   componentDidMount() {
@@ -109,7 +116,7 @@ class LabyrinthTutorial extends React.Component{
 
 
   renderControls = () => {
-    const { style } = this.props.location.state;
+    const { style } = this.props.location.state ? this.props.location.state : defaultState;
     const { chosenMatrix, controlMatrices } = this.state;
 
     return(
@@ -140,7 +147,7 @@ class LabyrinthTutorial extends React.Component{
     const board = this.board.current;
     if(!board) return;
     
-    const style = this.props.location.state.style;
+    const { style } = this.props.location.state ? this.props.location.state : defaultState;
     return(
       <div>
         <div className="across">
@@ -164,7 +171,7 @@ class LabyrinthTutorial extends React.Component{
   }
 
   render() {
-    const style = this.props.location.state.style;
+    const { style } = this.props.location.state ? this.props.location.state : defaultState;
     const { step } = this.state;
     const guide = tutorialGuidelines(style);
 

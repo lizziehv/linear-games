@@ -1,12 +1,9 @@
 import React from "react";
 import Square from "./Square";
 import { createRandomBoard, placeItems, multiply, moves } from "./util";
-import UIfx from 'uifx';
-import errorMp3 from '../../static/sounds/error.mp3'
-
+import { errBeep } from '../../static/sounds/mySounds.js';
 
 const SIZE = 6;
-const error = new UIfx({asset: errorMp3});
 
 /**
  * SIZE*SIZE matrix that renders into a go board
@@ -101,20 +98,19 @@ class Board extends React.Component {
     }
 
     // can't move anymore
-    if(newRow === -1 || this.state.board[newRow][prevPlayer.mcol][newPos] < 2) {
-      error.play();
-      return;
-    }
-    
-    // new positions
-    const newPlayer = { 
-      mrow: newRow, 
-      mcol: prevPlayer.mcol,
-      mpos: newPos 
-    };
+    if(newRow === -1){
+      errBeep.play();
+    } else if (this.state.board[newRow][prevPlayer.mcol][newPos] >= 2) {
+      // new positions
+      const newPlayer = { 
+        mrow: newRow, 
+        mcol: prevPlayer.mcol,
+        mpos: newPos 
+      };
 
-    // update pos
-    this.updatePosition(newPlayer, moves.UP);
+      // update pos
+      this.updatePosition(newPlayer, moves.UP);
+    }
   }
 
   movePlayerDown = () => {
@@ -128,16 +124,18 @@ class Board extends React.Component {
       newRow += 1;
     }
 
-    if(newRow === SIZE  || this.state.board[newRow][prevPlayer.mcol][newPos] < 2) return;
-    
-    const newPlayer = { 
-      mrow: newRow, 
-      mcol: prevPlayer.mcol,
-      mpos: newPos 
-    };
-
-    // see if item needs to be picked up
-    this.updatePosition(newPlayer, moves.DOWN);
+    if(newRow === SIZE){
+      errBeep.play();
+    } else if (this.state.board[newRow][prevPlayer.mcol][newPos] >= 2){
+      const newPlayer = { 
+        mrow: newRow, 
+        mcol: prevPlayer.mcol,
+        mpos: newPos 
+      };
+  
+      // see if item needs to be picked up
+      this.updatePosition(newPlayer, moves.DOWN);
+    }
   }
 
   movePlayerLeft = () => {
@@ -151,16 +149,18 @@ class Board extends React.Component {
       newCol -= 1;
     }
 
-    if(newCol < 0 || this.state.board[prevPlayer.mrow][newCol][newPos] < 2) return;
-    
-    const newPlayer = { 
-      mrow: prevPlayer.mrow, 
-      mcol: newCol,
-      mpos: newPos 
-    };
-
-    // see if item needs to be picked up
-    this.updatePosition(newPlayer, moves.LEFT);
+    if(newCol < 0){
+      errBeep.play();
+    } else if(this.state.board[prevPlayer.mrow][newCol][newPos] >= 2){
+      const newPlayer = { 
+        mrow: prevPlayer.mrow, 
+        mcol: newCol,
+        mpos: newPos 
+      };
+  
+      // see if item needs to be picked up
+      this.updatePosition(newPlayer, moves.LEFT);
+    }
   }
 
   movePlayerRight = () => {
@@ -174,16 +174,18 @@ class Board extends React.Component {
       newCol += 1;
     }
 
-    if(newCol === SIZE || this.state.board[prevPlayer.mrow][newCol][newPos] < 2) return;
-    
-    const newPlayer = { 
-      mrow: prevPlayer.mrow, 
-      mcol: newCol,
-      mpos: newPos 
-    };
-
-    // see if item needs to be picked up
-    this.updatePosition(newPlayer, moves.RIGHT);
+    if(newCol === SIZE){
+      errBeep.play();
+    } else if (this.state.board[prevPlayer.mrow][newCol][newPos] >= 2){
+      const newPlayer = { 
+        mrow: prevPlayer.mrow, 
+        mcol: newCol,
+        mpos: newPos 
+      };
+  
+      // see if item needs to be picked up
+      this.updatePosition(newPlayer, moves.RIGHT);
+    }
   }
 
   /**
