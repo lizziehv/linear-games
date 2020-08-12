@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../static/styles/style.scss"
+import "../../static/styles/style.scss"
 
 import Board from "../../components/labyrinth/Board";
 import Square from "../../components/labyrinth/Square";
@@ -37,8 +37,8 @@ class LabyrinthTutorial extends React.Component{
 
     // choose matrices in control board
     const matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
-    matrices.push(createRandomMatrix());
-    matrices.push(createRandomMatrix());
+    matrices.push(createRandomMatrix(0));
+    matrices.push(createRandomMatrix(0));
 
     this.board = React.createRef();
 
@@ -196,7 +196,13 @@ class LabyrinthTutorial extends React.Component{
               {step > 2 && this.renderControls()}
             </Col>
             <Col lg={6}>
-              <Board ref={this.board} theme={style} newItem={this.newItem} gameUpdate={() => this.forceUpdate()}/>
+              <Board
+                ref={this.board}
+                level={0}
+                theme={style}
+                newItem={this.newItem}
+                gameUpdate={() => this.forceUpdate()}
+              />
             </Col>
             <Col lg={2} xs={{ span: 12, offset: 0 }}>
               <div className="down full-container-height space-around">

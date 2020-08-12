@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../static/styles/style.scss"
+import "../../static/styles/style.scss"
 
 import Board from "../../components/labyrinth/Board";
 import Timer from "../../components/Timer";
@@ -11,16 +11,17 @@ import Col from "react-bootstrap/Col";
 import { createRandomMatrix, moves } from "../../components/labyrinth/util";
 import { navigate } from "gatsby";
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Pause, X, Play, Star, Home } from 'react-feather';
-import { coinCollect } from '../../static/sounds/mySounds.js';
+import { coinCollect, errBeep } from '../../static/sounds/mySounds.js';
 import { grayscales } from "../../static/styles/themes";
 
 const SIZE = 6;
-const REPS = 1;
+const REPS = 3;
 const TIME = 30;
 
 const defaultState = {
   style: grayscales, 
-  timerOn: false
+  timerOn: false,
+  soundOn: false
 }
 
 class LabyrinthGame extends React.Component{
@@ -29,8 +30,8 @@ class LabyrinthGame extends React.Component{
 
     // choose matrices in control board
     const matrices = [[2, 0, 0, 2], [0, 1, 1, 0]];
-    matrices.push(createRandomMatrix());
-    matrices.push(createRandomMatrix());
+    matrices.push(createRandomMatrix(0));
+    matrices.push(createRandomMatrix(0));
 
     this.timer = React.createRef();
     this.board = React.createRef();
@@ -43,26 +44,28 @@ class LabyrinthGame extends React.Component{
       totalItems: 0,
       gameOver: false,
       gamePaused: false,
-      repetitionNum: 0
+      repetitionNum: 0,
+      isClient: false
     }
   };
 
-  handleKeyPress = (e) => {
+  handleMove = (move) => {
     if(this.state.gamePaused) return;
     
     if(this.board.current){
-      switch (e.keyCode) {
+      const { soundOn } = this.props.location.state ? this.props.location.state : defaultState;
+      switch (move) {
         case moves.LEFT:  // left arrow
-          this.board.current.movePlayerLeft();
+          if(!this.board.current.movePlayerLeft() && soundOn){ errBeep.play(); }
           break;
         case moves.UP:  // up arrow
-          this.board.current.movePlayerUp();
+          if(!this.board.current.movePlayerUp() && soundOn){ errBeep.play(); }
           break;
         case moves.RIGHT:  // right arrow
-          this.board.current.movePlayerRight();
+          if(!this.board.current.movePlayerRight() && soundOn){ errBeep.play(); }
           break;
         case moves.DOWN:  // down arrow
-          this.board.current.movePlayerDown();
+          if(!this.board.current.movePlayerDown() && soundOn){ errBeep.play(); }
           break;
         default:
           return;
@@ -77,11 +80,12 @@ class LabyrinthGame extends React.Component{
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', e => this.handleKeyPress(e));
+    window.addEventListener('keydown', e => this.handleMove(e.keyCode));
+    this.setState({ isClient: true });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown',  e => this.handleKeyPress(e));
+    window.removeEventListener('keydown',  e => this.handleMove(e.keyCode));
   }
 
   chooseMatrix = (r, c) => {
@@ -108,7 +112,7 @@ class LabyrinthGame extends React.Component{
     // play sound or end game
     if(items === SIZE-1){  
       this.endGame();
-    } else {
+    } else if(this.props.location.state && this.props.location.state.soundOn){
       coinCollect.play();
     }
   }
@@ -178,22 +182,21 @@ class LabyrinthGame extends React.Component{
     if(!this.board.current) return;
     
     const { style } = this.props.location.state ? this.props.location.state : defaultState;
-    const { gamePaused } = this.state;
     return(
       <div>
         <div className="across">
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerUp : null}>
+          <button className="general" style={style.button} onClick={() => this.handleMove(moves.UP)}>
             <ArrowUp />
           </button>
         </div>
         <div className="across">
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerLeft : null}>
+          <button className="general" style={style.button} onClick={() => this.handleMove(moves.LEFT)}>
             <ArrowLeft />
           </button>
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerDown : null}>
+          <button className="general" style={style.button} onClick={() => this.handleMove(moves.DOWN)}>
             <ArrowDown />
           </button>
-          <button className="general" style={style.button} onClick={!gamePaused ? this.board.current.movePlayerRight : null}>
+          <button className="general" style={style.button} onClick={() => this.handleMove(moves.RIGHT)}>
             <ArrowRight />
           </button>
         </div>
@@ -202,7 +205,7 @@ class LabyrinthGame extends React.Component{
   }
 
   renderRatings = (num, total) => {
-    const numOfStars = Math.ceil((5*num)/(total));
+    const numOfStars = Math.floor((5*num)/(total));
     const filledStar = new Array(5);
     for(let i = 0; i < 5; i++){
       filledStar[i] = i < numOfStars ? true : false;
@@ -277,7 +280,7 @@ class LabyrinthGame extends React.Component{
     }
     else {
       return(
-        <div className={style.fontClass}>  
+        <div className={style.fontClass} key={this.state.isClient}>  
           <Container fluid style={style.background}>
             <Row>
               <Col lg={3} xs={{ span: 12, offset: 0 }}>
@@ -287,7 +290,8 @@ class LabyrinthGame extends React.Component{
                 <Board 
                   ref={this.board} 
                   theme={style}
-                  newItem={this.newItem} 
+                  newItem={this.newItem}
+                  level={repetitionNum}
                   gameUpdate={() => this.forceUpdate()}
                 />
               </Col>

@@ -1,5 +1,3 @@
-const chance0 = 5; // 4 out of 10 
-const chance1 = 5; // 4 out of 10
 const totalChance = 20;
 
 export const moves = {
@@ -12,22 +10,20 @@ export const moves = {
 /**
  * Random number between 0 and 2, with different probabilities
  */
-const randomMatrixValue = () => {
+const randomMatrixValue = (level) => {
   const randInRange = Math.floor(Math.random()*(totalChance + 1));
-  if(randInRange < chance0){
-    return 0;
-  } else if (randInRange < chance1 + chance0){
-    return 1;
-  } else {
-    return 2;
-  }
+  const chance = 7 + level;
+  
+  if(randInRange < chance){ return 0; }
+  else if (randInRange < chance*2){ return 1; }
+  else { return 2; }
 }
 
 /**
  * Returns a random array representing a 2*2 matrix
  * with nonzero determinant
  */
-export const createRandomMatrix = () => {
+export const createRandomMatrix = (level) => {
   let array = [0, 0, 0, 0];
 
   // choose two random values 
@@ -43,8 +39,8 @@ export const createRandomMatrix = () => {
       
   // fill other two values
   do {
-    array[randomI] = randomMatrixValue();
-    array[randomJ] = randomMatrixValue();
+    array[randomI] = randomMatrixValue(level);
+    array[randomJ] = randomMatrixValue(level);
 
   } // repeat until the matrix has nonzero determinant
   while ((array[0]*array[3] - array[1]*array[2])%3 === 0);
@@ -60,7 +56,7 @@ export const createRandomMatrix = () => {
  * 
  * @return board
  */
-export const createRandomBoard = (size) => {
+export const createRandomBoard = (size, level) => {
   let rows = new Array(size);
 
   for(let r = 0; r < size; r++){
@@ -70,7 +66,7 @@ export const createRandomBoard = (size) => {
       if(r === size-1 && c === size-1)
         row[c] = [2, 2, 2, 2];
       else
-        row[c] = createRandomMatrix();
+        row[c] = createRandomMatrix(level);
     }
     
     rows[r] = row;

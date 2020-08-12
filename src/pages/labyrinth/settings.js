@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../../static/styles/style.scss"
+
 import Col from 'react-bootstrap/Col';
 import Row from "react-bootstrap/Row";
 import Slider from "../../components/Slider";

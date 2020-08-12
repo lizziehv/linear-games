@@ -1,10 +1,7 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "../static/styles/style.scss"
 
 import Square from "./Square";
 import { createRandomBoard, placeItems, multiply, moves } from "./util";
-import { errBeep } from '../../static/sounds/mySounds.js';
 
 const SIZE = 6;
 
@@ -16,7 +13,7 @@ class Board extends React.Component {
     super(props);
 
     // create board
-    let b = createRandomBoard(SIZE);
+    let b = createRandomBoard(SIZE, props.level);
 
     // choose random places to place items
     placeItems(b, SIZE);
@@ -102,7 +99,7 @@ class Board extends React.Component {
 
     // can't move anymore
     if(newRow === -1){
-      errBeep.play();
+      return false;
     } else if (this.state.board[newRow][prevPlayer.mcol][newPos] >= 2) {
       // new positions
       const newPlayer = { 
@@ -114,6 +111,7 @@ class Board extends React.Component {
       // update pos
       this.updatePosition(newPlayer, moves.UP);
     }
+    return true;
   }
 
   movePlayerDown = () => {
@@ -128,7 +126,7 @@ class Board extends React.Component {
     }
 
     if(newRow === SIZE){
-      errBeep.play();
+      return false;
     } else if (this.state.board[newRow][prevPlayer.mcol][newPos] >= 2){
       const newPlayer = { 
         mrow: newRow, 
@@ -139,6 +137,7 @@ class Board extends React.Component {
       // see if item needs to be picked up
       this.updatePosition(newPlayer, moves.DOWN);
     }
+    return true;
   }
 
   movePlayerLeft = () => {
@@ -153,7 +152,7 @@ class Board extends React.Component {
     }
 
     if(newCol < 0){
-      errBeep.play();
+      return false;
     } else if(this.state.board[prevPlayer.mrow][newCol][newPos] >= 2){
       const newPlayer = { 
         mrow: prevPlayer.mrow, 
@@ -164,6 +163,7 @@ class Board extends React.Component {
       // see if item needs to be picked up
       this.updatePosition(newPlayer, moves.LEFT);
     }
+    return true;
   }
 
   movePlayerRight = () => {
@@ -178,7 +178,7 @@ class Board extends React.Component {
     }
 
     if(newCol === SIZE){
-      errBeep.play();
+      return false;
     } else if (this.state.board[prevPlayer.mrow][newCol][newPos] >= 2){
       const newPlayer = { 
         mrow: prevPlayer.mrow, 
@@ -189,6 +189,7 @@ class Board extends React.Component {
       // see if item needs to be picked up
       this.updatePosition(newPlayer, moves.RIGHT);
     }
+    return true;
   }
 
   /**
