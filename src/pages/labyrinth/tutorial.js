@@ -1,4 +1,7 @@
 import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../static/styles/style.scss"
+
 import Board from "../../components/labyrinth/Board";
 import Square from "../../components/labyrinth/Square";
 import Container from "react-bootstrap/Container";

@@ -1,4 +1,7 @@
 import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../static/styles/style.scss"
+
 import Square from "./Square";
 import { createRandomBoard, placeItems, multiply, moves } from "./util";
 import { errBeep } from '../../static/sounds/mySounds.js';
