@@ -15,8 +15,8 @@ import { coinCollect, errBeep } from '../../static/sounds/mySounds.js';
 import { grayscales } from "../../static/styles/themes";
 
 const SIZE = 6;
-const REPS = 1;
-const TIME = 10;
+const REPS = 3;
+const TIME = 60;
 
 const defaultState = {
   style: grayscales, 
