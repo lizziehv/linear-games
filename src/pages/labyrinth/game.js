@@ -15,8 +15,8 @@ import { coinCollect, errBeep } from '../../static/sounds/mySounds.js';
 import { grayscales } from "../../static/styles/themes";
 
 const SIZE = 6;
-const REPS = 3;
-const TIME = 30;
+const REPS = 1;
+const TIME = 10;
 
 const defaultState = {
   style: grayscales, 
@@ -133,11 +133,6 @@ class LabyrinthGame extends React.Component{
     }));
   }
 
-  quit = (e) => {
-    e.preventDefault(); 
-    navigate("/");
-  }
-
   handlePause = () => {
     const { gamePaused } = this.state;
     if(this.timer.current){
@@ -237,9 +232,9 @@ class LabyrinthGame extends React.Component{
             {this.renderRatings(totalItems, SIZE*REPS)}
             <Row>
               <Col sm={{span: 3, offset: 3}} xs={{ span: 10, offset: 1 }}>
-                <button className="general" style={style.button} onClick={e => this.quit(e)}>
+                <a className="general" style={style.button} href="https://linear-math-games.herokuapp.com/">
                   Leave Game
-                </button>
+                </a>
               </Col>
               <Col sm={{span: 3, offset: 0}} xs={{ span: 10, offset: 1 }}>
                 <button className="general" style={style.button} onClick={e => {

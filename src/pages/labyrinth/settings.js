@@ -47,9 +47,9 @@ const LabyrinthSettings = (props) => {
     <div className="settings-page">
       <div className={sheetClass} style={style===pacman ? style.background2 : style.background}>
         <div className="home">
-          <button onClick={() => navigate("/")}>
+          <a href="https://linear-math-games.herokuapp.com/">
             <Home size={60} style={style.icon} />
-          </button>
+          </a>
         </div>
         <div className="content-container">
           <h1 style={style.h1}>MATRIX LABYRINTH</h1>
